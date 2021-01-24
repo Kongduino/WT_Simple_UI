@@ -1,9 +1,13 @@
 #include "TFT_eSPI.h" //include TFT LCD library 
+#include "lcd_backlight.hpp"
+#include <cstdint>
 #include "Free_Fonts.h" //include free fonts library 
 
 TFT_eSPI tft; //initialize TFT LCD
 uint8_t line = 0;
 float r0 = .75, r1 = .5;
+uint8_t maxBrightness = 100;
+static LCDBackLight backLight;
 
 void setup() {
   Serial.begin(115200);
@@ -15,16 +19,18 @@ void setup() {
   pinMode(WIO_5S_LEFT, INPUT); //set switch pin left as input
   pinMode(WIO_5S_RIGHT, INPUT); //set switch pin right as input
   pinMode(WIO_5S_PRESS, INPUT); //set switch pin press as input
-  Serial.println("done");
   tft.begin(); //start TFT LCD
   tft.setRotation(1); //set screen rotation
-  tft.fillScreen(TFT_WHITE); //fill background
+  tft.fillScreen(tft.color565(200, 200, 200)); //fill background
   drawSliders(2);
+  Serial.println("pinMode");
   pinMode(WIO_5S_UP, INPUT); //set switch pin up as input
   pinMode(WIO_5S_DOWN, INPUT); //set switch pin down as input
   pinMode(WIO_5S_LEFT, INPUT); //set switch pin left as input
   pinMode(WIO_5S_RIGHT, INPUT); //set switch pin right as input
   pinMode(WIO_5S_PRESS, INPUT); //set switch pin press as input
+  backLight.initialize();
+  backLight.setBrightness(100 * r0);
   reDrawFocus();
 }
 
@@ -80,6 +86,7 @@ void drawSliders(uint8_t which) {
   // 2 --> both
   if (which == 0 || which == 2) {
     //Drawing for brightness
+    backLight.setBrightness(maxBrightness * r0);
     tft.setFreeFont(&FreeSansBold12pt7b); //set font type
     tft.setTextColor(TFT_BLACK); //set text color
     tft.drawString("Brightness", 90, 10); //draw text string
