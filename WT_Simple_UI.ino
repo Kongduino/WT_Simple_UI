@@ -1,4 +1,4 @@
-#include "TFT_eSPI.h" //include TFT LCD library 
+#include <TFT_eSPI.h> //include TFT LCD library 
 #include "lcd_backlight.hpp"
 #include <cstdint>
 #include "Free_Fonts.h" //include free fonts library 
@@ -6,6 +6,7 @@
 TFT_eSPI tft; //initialize TFT LCD
 uint8_t line = 0;
 float r0 = .75, r1 = .5;
+uint32_t offsetX = 75, offsetY0 = 45, offsetY1 = 120, barWidth = 160, barHeight = 20;
 uint8_t maxBrightness = 100;
 static LCDBackLight backLight;
 
@@ -90,18 +91,40 @@ void drawSliders(uint8_t which) {
     tft.setFreeFont(&FreeSansBold12pt7b); //set font type
     tft.setTextColor(TFT_BLACK); //set text color
     tft.drawString("Brightness", 90, 10); //draw text string
-    tft.fillRect(75, 45, 160, 20, TFT_WHITE); //draw rectangle with border
-    tft.drawRect(75, 45, 160, 20, TFT_NAVY); //draw rectangle with border
-    tft.fillRect(75, 45, 160 * r0, 20, TFT_NAVY); //fill rectangle with color
+    uint8_t i, j;
+    uint16_t lm = 160 * r0;
+    Serial.println("lm = " + String(lm));
+    Serial.println("r0 = " + String(r0));
+    tft.startWrite();
+    tft.setAddrWindow(offsetX - 1, offsetY0 - 1, barWidth + 2, barHeight + 2);
+    tft.pushColor(TFT_BLUE, barWidth + 2);
+    for (j = 0; j < barHeight; j++) {
+      tft.pushColor(TFT_BLUE, lm + 1);
+      tft.pushColor(TFT_WHITE, barWidth - lm);
+      tft.pushColor(TFT_BLUE, 1);
+    }
+    tft.pushColor(TFT_BLUE, barWidth + 2);
+    tft.endWrite();
   }
   if (which == 1 || which == 2) {
     //Drawing for Volume
     tft.setFreeFont(&FreeSerifBoldItalic12pt7b);
     tft.setTextColor(TFT_BLACK);
     tft.drawString("Volume", 110, 90);
-    tft.fillRect(75, 120, 160, 20, TFT_WHITE);
-    tft.drawRect(75, 120, 160, 20, TFT_CYAN);
-    tft.fillRect(75, 120, 160 * r1, 20, TFT_CYAN);
+    uint8_t i, j;
+    uint16_t lm = 160 * r1;
+    Serial.println("lm = " + String(lm));
+    Serial.println("r0 = " + String(r0));
+    tft.startWrite();
+    tft.setAddrWindow(offsetX - 1, offsetY1 - 1, barWidth + 2, barHeight + 2);
+    tft.pushColor(TFT_CYAN, barWidth + 2);
+    for (j = 0; j < barHeight; j++) {
+      tft.pushColor(TFT_CYAN, lm + 1);
+      tft.pushColor(TFT_WHITE, barWidth - lm);
+      tft.pushColor(TFT_CYAN, 1);
+    }
+    tft.pushColor(TFT_CYAN, barWidth + 2);
+    tft.endWrite();
   }
   delay(10);
 }
