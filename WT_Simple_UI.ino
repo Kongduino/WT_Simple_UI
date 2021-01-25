@@ -93,17 +93,16 @@ void drawSliders(uint8_t which) {
     tft.drawString("Brightness", 90, 10); //draw text string
     uint8_t i, j;
     uint16_t lm = 160 * r0;
-    Serial.println("lm = " + String(lm));
-    Serial.println("r0 = " + String(r0));
     tft.startWrite();
     tft.setAddrWindow(offsetX - 1, offsetY0 - 1, barWidth + 2, barHeight + 2);
     tft.pushColor(TFT_BLUE, barWidth + 2);
+    // top border
     for (j = 0; j < barHeight; j++) {
-      tft.pushColor(TFT_BLUE, lm + 1);
-      tft.pushColor(TFT_WHITE, barWidth - lm);
-      tft.pushColor(TFT_BLUE, 1);
+      tft.pushColor(TFT_BLUE, lm + 1); // left border + ratio
+      tft.pushColor(TFT_WHITE, barWidth - lm); // remainder
+      tft.pushColor(TFT_BLUE, 1); // right border
     }
-    tft.pushColor(TFT_BLUE, barWidth + 2);
+    tft.pushColor(TFT_BLUE, barWidth + 2); // bottom border
     tft.endWrite();
   }
   if (which == 1 || which == 2) {
@@ -113,8 +112,6 @@ void drawSliders(uint8_t which) {
     tft.drawString("Volume", 110, 90);
     uint8_t i, j;
     uint16_t lm = 160 * r1;
-    Serial.println("lm = " + String(lm));
-    Serial.println("r0 = " + String(r0));
     tft.startWrite();
     tft.setAddrWindow(offsetX - 1, offsetY1 - 1, barWidth + 2, barHeight + 2);
     tft.pushColor(TFT_CYAN, barWidth + 2);
